@@ -1,0 +1,32 @@
+The recommended way to install cuDNN 7.0 is to download all 3 .deb files. I had previously recommended using the .tgz installation approach, but found out that it didn’t allow verification by running code samples (no way to install the code samples .deb after .tgz installation).
+
+The following steps are pretty much the same as the installation guide using .deb files (strange that the cuDNN guide is better than the CUDA one).
+
+    Go to the cuDNN download page (need registration) and select the latest cuDNN 7.0.* version made for CUDA 9.0.
+    Download all 3 .deb files: the runtime library, the developer library, and the code samples library for Ubuntu 16.04.
+    In your download folder, install them in the same order:
+
+$ sudo dpkg -i libcudnn7_7.0.5.15–1+cuda9.0_amd64.deb (the runtime library),
+
+$ sudo dpkg -i libcudnn7-dev_7.0.5.15–1+cuda9.0_amd64.deb (the developer library), and
+
+$ sudo dpkg -i libcudnn7-doc_7.0.5.15–1+cuda9.0_amd64.deb (the code samples).
+
+Now we can verify the cuDNN installation (below is just the official guide, which surprisingly works out of the box):
+
+    Copy the code samples somewhere you have write access: cp -r /usr/src/cudnn_samples_v7/ ~.
+    Go to the MNIST example code: cd ~/cudnn_samples_v7/mnistCUDNN.
+    Compile the MNIST example: make clean && make.
+    Run the MNIST example: ./mnistCUDNN. If your installation is successful, you should see Test passed! at the end of the output.
+
+Do NOT Install cuda-command-line-tools
+
+Contrary to the official TensorFlow installation docs, you don’t need to install cuda-command-line-tools because it’s already installed in this version of CUDA and cuDNN. If you apt-get it, you won’t find it.
+Configure the CUDA and cuDNN library paths
+
+What you do need to do, however, is exporting environment variables LD_LIBRARY_PATH in your .bashrc file:
+
+# put the following line in the end or your .bashrc file
+export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/cuda/extras/CUPTI/lib64"
+
+And source it by source ~/.bashrc.

@@ -1,0 +1,35 @@
+#!/bin/bash
+
+#Glorious Sulemin
+ 
+get_latest_release() {
+  URL="https://api.github.com/repositories/23357588/releases/latest"
+  VERSION=$(curl --silent $URL |grep '"tag_name":' |sed -E 's/.*"([^"]+)".*/\1/')
+  echo $VERSION
+}
+
+LATEST_VERSION=$(get_latest_release ${PROTOC_REPO})
+echo "Latest version is:  ${LATEST_VERSION}"
+_VERSION=${LATEST_VERSION:1}
+
+# grab the latest version
+curl -OL https://github.com/${PROTOC_REPO}/releases/download/${LATEST_VERSION}/protoc-${_VERSION}-linux-x86_64.zip
+
+# Unzip
+unzip protoc-${_VERSION}-linux-x86_64.zip -d protoc3
+
+# Move protoc to /usr/local/bin/
+sudo mv protoc3/bin/* /usr/local/bin/
+
+# Move protoc3/include to /usr/local/include/
+sudo mv protoc3/include/* /usr/local/include/
+
+# Change owner
+sudo chown $USER /usr/local/bin/protoc
+sudo chown -R $USER /usr/local/include/google
+
+# Delete Junk
+sudo rm -rf protoc3
+
+exit 0
+
